@@ -1,8 +1,8 @@
 from opcua_module.opcua_client import UaClient
 
 ua_client = list()
-ua_client.append(UaClient('opc.tcp://172.17.1.160:4840/optimum/device/0/'))
-# ua_client.append(UaClient('opc.tcp://0.0.0.0:4841/optimum/device/1/'))
+ua_client.append(UaClient('opc.tcp://172.17.1.92:4840/optimum/device/0/'))
+ua_client.append(UaClient('opc.tcp://172.17.3.141:4840/optimum/device/1/'))
 num_client = len(ua_client)
 
 
@@ -34,7 +34,7 @@ while True:
             ua_client[int(parse[1])].go_to(int(parse[2]), int(parse[3]))
         elif parse[0] == 'lets':
             for i in range(num_client):
-                drive(i, parse[2])
+                drive(i, parse[1])
         elif parse[0] == 'exit':
             print('exit client')
             break

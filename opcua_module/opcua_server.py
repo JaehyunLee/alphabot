@@ -46,7 +46,7 @@ class UaServer(object):
             location_x.set_value(my_x)
             location_y.set_value(my_y)
             if self.isRaspberry:
-                ab.forward(1.6)
+                ab.forward(1)
 
         @uamethod
         def go_back(parent):
@@ -55,21 +55,21 @@ class UaServer(object):
             location_x.set_value(my_x)
             location_y.set_value(my_y)
             if self.isRaspberry:
-                ab.backward(1.6)
+                ab.backward(1)
 
         @uamethod
         def turn_left(parent):
             print('left')
             my_map.turn_left()
             if self.isRaspberry:
-                ab.left(0.4)
+                ab.left(0.35)
 
         @uamethod
         def turn_right(parent):
             print('right')
             my_map.turn_right()
             if self.isRaspberry:
-                ab.right(0.4)
+                ab.right(0.35)
 
         @uamethod
         def go_to(parent, target_x, target_y):
@@ -92,7 +92,6 @@ class UaServer(object):
         self.device.add_method(idx, 'turn_left', turn_left)
         self.device.add_method(idx, 'turn_right', turn_right)
         self.device.add_method(idx, 'go_to', go_to, [ua.VariantType.Int64, ua.VariantType.Int64])
-
 
     def start(self):
         self.server.start()

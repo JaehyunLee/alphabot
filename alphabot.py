@@ -53,15 +53,6 @@ class AlphaBot2(object):
         GPIO.output(self.BIN1, GPIO.LOW)
 
     def left(self, value):
-        self.PWMA.ChangeDutyCycle(self.rotate_speed)  # LB
-        self.PWMB.ChangeDutyCycle(self.rotate_speed)  # RF
-        GPIO.output(self.AIN1, GPIO.HIGH)
-        GPIO.output(self.BIN2, GPIO.HIGH)
-        time.sleep(value)
-        GPIO.output(self.AIN1, GPIO.LOW)
-        GPIO.output(self.BIN2, GPIO.LOW)
-
-    def right(self, value):
         self.PWMA.ChangeDutyCycle(self.rotate_speed - 3)  # LF
         self.PWMB.ChangeDutyCycle(self.rotate_speed - 3)  # RB
         GPIO.output(self.AIN2, GPIO.HIGH)
@@ -69,6 +60,15 @@ class AlphaBot2(object):
         time.sleep(value)
         GPIO.output(self.AIN2, GPIO.LOW)
         GPIO.output(self.BIN1, GPIO.LOW)
+
+    def right(self, value):
+        self.PWMA.ChangeDutyCycle(self.rotate_speed)  # LB
+        self.PWMB.ChangeDutyCycle(self.rotate_speed)  # RF
+        GPIO.output(self.AIN1, GPIO.HIGH)
+        GPIO.output(self.BIN2, GPIO.HIGH)
+        time.sleep(value)
+        GPIO.output(self.AIN1, GPIO.LOW)
+        GPIO.output(self.BIN2, GPIO.LOW)
 
     def change_speed(self, value):
         self.move_speed = value
