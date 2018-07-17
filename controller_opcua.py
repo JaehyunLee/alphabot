@@ -1,15 +1,27 @@
 from opcua_module.opcua_client import UaClient
 
 ua_client = list()
-ua_client.append(UaClient('opc.tcp://0.0.0.0:4840/optimum/device/0/'))
+ua_client.append(UaClient('opc.tcp://172.17.1.160:4840/optimum/device/0/'))
 # ua_client.append(UaClient('opc.tcp://0.0.0.0:4841/optimum/device/1/'))
 num_client = len(ua_client)
 
 
 def op_guide_message():
     print('Use following example:')
-    print('drive id(int) direction(f, b, l, r)')
     print('goto id(int) x(int) y(int)')
+    print('drive id(int) direction(f, b, l, r)')
+    print('lets direction(f, b, l, r)')
+
+
+def drive(client_id, control_op):
+    if control_op == 'f':
+        ua_client[client_id].go_front()
+    elif control_op == 'b':
+        ua_client[client_id].go_back()
+    elif control_op == 'l':
+        ua_client[client_id].turn_left()
+    elif control_op == 'r':
+        ua_client[client_id].turn_right()
 
 
 while True:
@@ -17,16 +29,12 @@ while True:
     parse = msg.split()
     try:
         if parse[0] == 'drive':
-            if parse[2] == 'f':
-                ua_client[int(parse[1])].go_front()
-            elif parse[2] == 'b':
-                ua_client[int(parse[1])].go_back()
-            elif parse[2] == 'l':
-                ua_client[int(parse[1])].turn_left()
-            elif parse[2] == 'r':
-                ua_client[int(parse[1])].turn_right()
+            drive(int(parse[1]), parse[2])
         elif parse[0] == 'goto':
             ua_client[int(parse[1])].go_to(int(parse[2]), int(parse[3]))
+        elif parse[0] == 'lets':
+            for i in range(num_client):
+                drive(i, parse[2])
         elif parse[0] == 'exit':
             print('exit client')
             break
