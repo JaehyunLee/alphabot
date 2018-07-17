@@ -1,8 +1,10 @@
 import code
 from opcua_module.opcua_server import UaServer
 
-my_device = UaServer('opc.tcp://0.0.0.0:4840/optimum/device/', 0)
+print('input your id: ')
+my_device = UaServer('opc.tcp://0.0.0.0:4840/optimum/device/', input())
 my_device.start()
+print('device start')
 try:
     embed_vars = globals()
     embed_vars.update(locals())
