@@ -30,11 +30,13 @@ class VirtualMap(object):
         self.direction += 1
         if self.direction > 3:
             self.direction = 0
+        return self.direction
 
     def turn_right(self):
         self.direction -= 1
         if self.direction < 0:
             self.direction = 3
+        return self.direction
 
     def go_to(self, target_x, target_y):
         op_queue = []

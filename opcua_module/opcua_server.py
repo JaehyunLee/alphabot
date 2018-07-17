@@ -25,26 +25,26 @@ class UaServer(object):
         self.device.add_property(idx, 'max_load', 10)
 
         # Variable
-        location_x = self.device.add_variable(idx, 'location_x', 0)
-        location_x.set_writable()
-        location_y = self.device.add_variable(idx, 'location_y', 0)
-        location_y.set_writable()
+        my_location_x = self.device.add_variable(idx, 'location_x', 0)
+        my_location_x.set_writable()
+        my_location_y = self.device.add_variable(idx, 'location_y', 0)
+        my_location_y.set_writable()
+        my_direction = self.device.add_variable(idx, 'direction', 0)
+        my_direction.set_writable()
         self.device.add_variable(idx, 'hook_height', 0)
         self.device.add_variable(idx, 'speed', 20)
         self.device.add_variable(idx, 'current_load', 0)
         self.device.add_variable(idx, 'distance_set_point', 0)
         self.device.add_variable(idx, 'current_load', 0)
-        self.device.add_variable(idx, 'network_condition', True)
-
-        self.device_direction = 0
+        self.device.add_variable(idx, 'network_condition', 1)
         my_map = VirtualMap(0, 0, 0)
 
         @uamethod
         def go_front(parent):
             print('front')
             my_x, my_y = my_map.go_front()
-            location_x.set_value(my_x)
-            location_y.set_value(my_y)
+            my_location_x.set_value(my_x)
+            my_location_y.set_value(my_y)
             if self.isRaspberry:
                 ab.forward(1)
 
@@ -52,29 +52,28 @@ class UaServer(object):
         def go_back(parent):
             print('back')
             my_x, my_y = my_map.go_back()
-            location_x.set_value(my_x)
-            location_y.set_value(my_y)
+            my_location_x.set_value(my_x)
+            my_location_y.set_value(my_y)
             if self.isRaspberry:
                 ab.backward(1)
 
         @uamethod
         def turn_left(parent):
             print('left')
-            my_map.turn_left()
+            my_direction.set_value(my_map.turn_left())
             if self.isRaspberry:
                 ab.left(0.35)
 
         @uamethod
         def turn_right(parent):
             print('right')
-            my_map.turn_right()
+            my_direction.set_value(my_map.turn_right())
             if self.isRaspberry:
                 ab.right(0.35)
 
         @uamethod
         def go_to(parent, target_x, target_y):
             op_queue = my_map.go_to(target_x, target_y)
-            print('op_queue:', op_queue)
             while len(op_queue) > 0:
                 device_op = op_queue.pop(0)
                 if device_op == 0:

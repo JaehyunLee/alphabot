@@ -1,5 +1,6 @@
 import datetime
 from opcua import Client
+from device_object import Device
 
 
 class SubHandler(object):
@@ -15,6 +16,8 @@ class SubHandler(object):
             print('[{0}] [{1}] [location_x]: {2}'.format(changed_timestamp, self.client_object.device_id, val))
         elif node == self.client_object.location_y:
             print('[{0}] [{1}] [location_y]: {2}'.format(changed_timestamp, self.client_object.device_id, val))
+        elif node == self.client_object.direction:
+            print('[{0}] [{1}] [direction]: {2}'.format(changed_timestamp, self.client_object.device_id, val))
         else:
             print('[{0}]: ERROR: unknown data is changed'.format(changed_timestamp))
 
@@ -32,11 +35,13 @@ class UaClient(object):
         self.device_id = self.device.get_child(['2:device_id']).get_value()
         self.location_x = self.device.get_child(['2:location_x'])
         self.location_y = self.device.get_child(['2:location_y'])
+        self.direction = self.device.get_child(['2:direction'])
 
         handler = SubHandler(self)
         sub = self.client.create_subscription(500, handler)
         sub.subscribe_data_change(self.location_x)
         sub.subscribe_data_change(self.location_y)
+        sub.subscribe_data_change(self.direction)
 
     def go_front(self):
         self.device.call_method('2:go_front')
@@ -52,6 +57,9 @@ class UaClient(object):
 
     def go_to(self, target_x, target_y):
         self.device.call_method('2:go_to', target_x, target_y)
+
+    def get_status(self):
+        return Device(self.device).to_json()
 
     def disconnect(self):
         self.client.disconnect()

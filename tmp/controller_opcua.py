@@ -13,7 +13,7 @@ def op_guide_message():
     print('lets direction(f, b, l, r)')
 
 
-def drive(client_id, control_op):
+def drive_op(client_id, control_op):
     if control_op == 'f':
         ua_client[client_id].go_front()
     elif control_op == 'b':
@@ -29,12 +29,12 @@ while True:
     parse = msg.split()
     try:
         if parse[0] == 'drive':
-            drive(int(parse[1]), parse[2])
+            drive_op(int(parse[1]), parse[2])
         elif parse[0] == 'goto':
             ua_client[int(parse[1])].go_to(int(parse[2]), int(parse[3]))
         elif parse[0] == 'lets':
             for i in range(num_client):
-                drive(i, parse[1])
+                drive_op(i, parse[1])
         elif parse[0] == 'exit':
             print('exit client')
             break
