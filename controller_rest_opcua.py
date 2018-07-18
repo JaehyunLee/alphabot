@@ -10,7 +10,7 @@ app = Flask(__name__)
 ua_client = list()
 # ua_client.append(UaClient('opc.tcp://172.17.1.92:4840/optimum/device/0/'))
 # ua_client.append(UaClient('opc.tcp://172.17.3.141:4840/optimum/device/1/'))
-ua_client.append(UaClient('opc.tcp://0.0.0.0:4840/optimum/device/1/'))
+ua_client.append(UaClient('opc.tcp://10.30.5.116:4840/optimum/device/0/'))
 num_client = len(ua_client)
 
 
@@ -61,16 +61,12 @@ def goto(device_id):
 
 
 @app.route('/optimum/device/refreshStatus', methods=['POST'])
-def refresh_status(device_id):
-    # Error Check
-    if num_client <= device_id or device_id < 0:
-        return '[ERROR] Invalid Device ID'
-    else:
-        status_json = [ua_client[i].get_status() for i in range(num_client)]
-        status_json = jsonify(status_json)
-        print('[SUCCESS][{0}][device{1}]'.format(datetime.datetime.now(), device_id), end=' ')
-        print(status_json)
-        return status_json
+def refresh_status():
+    status_json = [ua_client[i].get_status() for i in range(num_client)]
+    status_json = jsonify(status_json)
+    print('[SUCCESS][{0}]'.format(datetime.datetime.now()), end=' ')
+    print(status_json)
+    return status_json
 
 
 app.run(host='0.0.0.0')
