@@ -59,7 +59,7 @@ class UaClient(object):
         self.device.call_method('2:go_to', target_x, target_y)
 
     def get_status(self):
-        return Device(self.device).to_json()
+        return Device(self.device).get_status()
 
     def disconnect(self):
         self.client.disconnect()

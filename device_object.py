@@ -1,8 +1,6 @@
-import json
-
-
 class Device(object):
     def __init__(self, device):
+
         self.nodeID = device.get_child(['2:device_id']).get_value()
         self.status = device.get_child(['2:status']).get_value()
         self.maxLoad = device.get_child(['2:max_load']).get_value()
@@ -15,7 +13,7 @@ class Device(object):
         self.hookHeight = device.get_child(['2:hook_height']).get_value()
         self.networkCondition = device.get_child(['2:network_condition']).get_value()
 
-    def to_json(self):
+    def get_status(self):
         status = {
             'nodeID': self.nodeID,
             'status': self.status,
@@ -29,4 +27,4 @@ class Device(object):
             'hookHeight': self.hookHeight,
             'networkCondition': self.networkCondition
         }
-        return json.dumps(status)
+        return status
