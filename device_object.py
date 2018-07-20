@@ -15,7 +15,7 @@ class Device(object):
 
     def get_status(self):
         status = {
-            'nodeID': self.nodeID,
+            'nodeID': 'crane'+str(self.nodeID),
             'status': self.status,
             'maxLoad': self.maxLoad,
             'currentLoad': self.currentLoad,
@@ -28,3 +28,15 @@ class Device(object):
             'networkCondition': self.networkCondition
         }
         return status
+
+    def set_locationX(self, value):
+        self.locationX = value
+
+    def set_locationY(self, value):
+        self.locationY = value
+
+    def set_direction(self, value):
+        self.direction = value
+
+    def set_networkCondition(self, value):
+        self.networkCondition = value

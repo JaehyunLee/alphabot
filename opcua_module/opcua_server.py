@@ -36,7 +36,8 @@ class UaServer(object):
         self.device.add_variable(idx, 'current_load', 0)
         self.device.add_variable(idx, 'distance_set_point', 0)
         self.device.add_variable(idx, 'current_load', 0)
-        self.device.add_variable(idx, 'network_condition', 1)
+        self.my_network_condition = self.device.add_variable(idx, 'network_condition', 1)
+        self.my_network_condition.set_writable()
         my_map = VirtualMap(0, 0, 0)
 
         @uamethod

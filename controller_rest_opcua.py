@@ -1,5 +1,4 @@
 import datetime
-import json
 from flask import Flask, request, jsonify
 from opcua_module.opcua_client import UaClient
 
@@ -25,7 +24,7 @@ def drive_op(client_id, control_op):
         ua_client[client_id].turn_right()
 
 
-@app.route('/optimum/device/<int:device_id>/drive', methods=['POST'])
+@app.route('/optimum/device/crane<int:device_id>/drive', methods=['POST'])
 def drive(device_id):
     control_op = request.args.get('op', 'NULL')
 
@@ -38,11 +37,13 @@ def drive(device_id):
         drive_op(device_id, control_op)  # Move Raspberry Pi
         success_msg = '[SUCCESS][{0}][device{1}] drive {2}'
         success_msg = success_msg.format(datetime.datetime.now(), device_id, control_op)
-        print(success_msg)
-        return success_msg
+        result_msg = {"responseCode": 2000, "responseMsg": success_msg}
+        response_msg = jsonify(result_msg)
+        print(response_msg)
+        return response_msg
 
 
-@app.route('/optimum/device/<int:device_id>/goto', methods=['POST'])
+@app.route('/optimum/device/crane<int:device_id>/goto', methods=['POST'])
 def goto(device_id):
     location_x = request.args.get('x', 'NULL')
     location_y = request.args.get('y', 'NULL')
@@ -56,16 +57,18 @@ def goto(device_id):
         ua_client[device_id].go_to(int(location_x), int(location_y))  # Move Raspberry Pi
         success_msg = '[SUCCESS][{0}][device{1}] goto {2} {3}'
         success_msg = success_msg.format(datetime.datetime.now(), device_id, location_x, location_y)
-        print(success_msg)
-        return success_msg
+        result_msg = {"responseCode": 2000, "responseMsg": success_msg}
+        response_msg = jsonify(result_msg)
+        print(response_msg)
+        return response_msg
 
 
 @app.route('/optimum/device/refreshStatus', methods=['POST'])
 def refresh_status():
     status_msg = [ua_client[i].get_status() for i in range(num_client)]
-    result_msg = {'responseCode': 2000, 'responseMsg': 'Success', 'opcStatus': True, 'thingsStatus': status_msg}
+    success_msg = '[SUCCESS][{0}]'.format(datetime.datetime.now())
+    result_msg = {'responseCode': 2000, 'responseMsg': success_msg, 'opcStatus': True, 'thingsStatus': status_msg}
     result_msg = jsonify(result_msg)
-    print('[SUCCESS][{0}]'.format(datetime.datetime.now()), end=' ')
     print(result_msg)
     return result_msg
 

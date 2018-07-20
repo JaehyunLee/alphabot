@@ -1,4 +1,5 @@
 import code
+import time
 from opcua_module.opcua_server import UaServer
 
 print('input your id: ')
@@ -11,4 +12,7 @@ try:
     shell = code.InteractiveConsole(embed_vars)
     shell.interact()
 finally:
+    my_device.my_network_condition.set_value(0)
+    time.sleep(1)
+    print('Disconnected')
     my_device.stop()
