@@ -39,7 +39,6 @@ class AlphaBot2(object):
         GPIO.output(self.BIN2, GPIO.LOW)
 
     def stop(self):
-        self.__init__()
         GPIO.output(self.AIN1, GPIO.LOW)
         GPIO.output(self.AIN2, GPIO.LOW)
         GPIO.output(self.BIN1, GPIO.LOW)
