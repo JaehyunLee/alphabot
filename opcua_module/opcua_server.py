@@ -1,5 +1,7 @@
 from opcua import uamethod, Server, ua
 from virtual_map import VirtualMap
+from rq import Queue
+from redis import Redis
 
 
 class UaServer(object):
@@ -40,6 +42,10 @@ class UaServer(object):
         self.my_network_condition.set_writable()
         my_map = VirtualMap(0, 0, 0)
 
+        # Redis
+        redis_conn = Redis()
+        q = Queue(connection=redis_conn)
+
         @uamethod
         def go_front(parent):
             print('front')
@@ -47,7 +53,8 @@ class UaServer(object):
             my_location_x.set_value(my_x)
             my_location_y.set_value(my_y)
             if self.isRaspberry:
-                ab.forward(1)
+                # ab.forward(1)
+                q.enqueue(ab.forward, 1)
 
         @uamethod
         def go_back(parent):
@@ -56,21 +63,24 @@ class UaServer(object):
             my_location_x.set_value(my_x)
             my_location_y.set_value(my_y)
             if self.isRaspberry:
-                ab.backward(1)
+                # ab.backward(1)
+                q.enqueue(ab.backward, 1)
 
         @uamethod
         def turn_left(parent):
             print('left')
             my_direction.set_value(my_map.turn_left())
             if self.isRaspberry:
-                ab.left(0.35)
+                # ab.left(0.35)
+                q.enqueue(ab.left, 0.35)
 
         @uamethod
         def turn_right(parent):
             print('right')
             my_direction.set_value(my_map.turn_right())
             if self.isRaspberry:
-                ab.right(0.35)
+                # ab.right(0.35)
+                q.enqueue(ab.right, 0.35)
 
         @uamethod
         def go_to(parent, target_x, target_y):

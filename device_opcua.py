@@ -1,9 +1,8 @@
 import code
 import time
-from opcua_module.opcua_server import UaServer
+from opcua_module.opcua_server_origin import UaServer
 
-print('input your id: ')
-my_device = UaServer('opc.tcp://0.0.0.0:4840/optimum/device/', int(input()))
+my_device = UaServer('opc.tcp://0.0.0.0:4840/optimum/device/', int(input('input your id: ')))
 my_device.start()
 print('device start')
 try:
