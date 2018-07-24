@@ -15,7 +15,7 @@ class Device(object):
 
     def get_status(self):
         status = {
-            'nodeID': 'crane'+str(self.nodeID),
+            'nodeID': 'CRANE{0:02d}'.format(self.nodeID+1),
             'status': self.status,
             'maxLoad': self.maxLoad,
             'currentLoad': self.currentLoad,
