@@ -2,6 +2,7 @@ from opcua import uamethod, Server, ua
 from virtual_map import VirtualMap
 from rq import Queue
 from redis import Redis
+import threading, time
 
 
 class UaServer(object):
@@ -23,7 +24,8 @@ class UaServer(object):
         # Object
         self.device = self.server.nodes.objects.add_object(idx, 'device')
         self.device.add_property(idx, 'device_id', device_id)
-        self.device.add_property(idx, 'status', 1)
+        my_status = self.device.add_property(idx, 'status', 1)
+        my_status.set_writable()
         self.device.add_property(idx, 'max_load', 10)
 
         # Variable
@@ -82,9 +84,18 @@ class UaServer(object):
                 # ab.right(0.35)
                 q.enqueue(ab.right, 0.35)
 
+        def set_ready(value):
+            time.sleep(value)
+            my_status.set_value(1)
+
         @uamethod
         def go_to(parent, target_x, target_y):
+            my_x = my_map.x
+            my_y = my_map.y
             op_queue = my_map.go_to(target_x, target_y)
+            counter = abs(my_x - target_x) + abs(my_y - target_y)
+
+            my_status.set_value(4)
             while len(op_queue) > 0:
                 device_op = op_queue.pop(0)
                 if device_op == 0:
@@ -95,6 +106,8 @@ class UaServer(object):
                     turn_left(parent)
                 elif device_op == 3:
                     turn_right(parent)
+            t = threading.Thread(target=set_ready, args=(counter,))
+            t.start()
 
         # Method
         self.device.add_method(idx, 'go_front', go_front)

@@ -24,8 +24,9 @@ def drive_op(client_id, control_op):
         ua_client[client_id].turn_right()
 
 
-@app.route('/optimum/device/crane<int:device_id>/drive', methods=['POST'])
+@app.route('/optimum/device/CRANE<int:device_id>/drive', methods=['POST'])
 def drive(device_id):
+    device_id -= 1
     control_op = request.args.get('op', 'NULL')
 
     # Error Check
@@ -43,8 +44,9 @@ def drive(device_id):
         return response_msg
 
 
-@app.route('/optimum/device/crane<int:device_id>/goto', methods=['POST'])
+@app.route('/optimum/device/CRANE<int:device_id>/goto', methods=['POST'])
 def goto(device_id):
+    device_id -= 1
     location_x = request.args.get('x', 'NULL')
     location_y = request.args.get('y', 'NULL')
 

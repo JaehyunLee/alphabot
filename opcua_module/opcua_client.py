@@ -8,16 +8,8 @@ class SubHandler(object):
     def __init__(self, client_object):
         self.client_object = client_object
 
-
-    '''
-    수정해야할 사항:
-    이 함수 내에서는 노드에 대한 get_value() 함수가 안됨
-    따라서, 변수가 바뀔때마다 바뀐 변수에 대한 정보를 객체에 저장하는 형식으로 관리해야 함
-    변수를 저장하는것도 안됨..
-    '''
-
     def datachange_notification(self, node, val, data):
-        url = 'http://10.30.5.172:9876/iiot/information/refreshThingStatus'
+        url = 'http://192.168.200.1:9876/iiot/information/refreshThingStatus'
         changed_timestamp = data.monitored_item.Value.SourceTimestamp
         changed_timestamp += datetime.timedelta(hours=9)
         changed_timestamp += datetime.timedelta(minutes=5)
@@ -31,6 +23,9 @@ class SubHandler(object):
         elif node == self.client_object.direction:
             self.client_object.device_obj.set_direction(value=val)
             print('[{0}] [{1}] [direction]: {2}'.format(changed_timestamp, self.client_object.device_id, val))
+        elif node == self.client_object.status:
+            self.client_object.device_obj.set_status(value=val)
+            print('[{0}] [{1}] [status]: {2}'.format(changed_timestamp, self.client_object.device_id, val))
         elif node == self.client_object.network_condition:
             self.client_object.device_obj.set_networkCondition(value=val)
             data = {'thingsStatus': [self.client_object.device_obj.get_status()]}
@@ -67,6 +62,7 @@ class UaClient(object):
         self.location_x = self.device.get_child(['2:location_x'])
         self.location_y = self.device.get_child(['2:location_y'])
         self.direction = self.device.get_child(['2:direction'])
+        self.status = self.device.get_child(['2:status'])
         self.network_condition = self.device.get_child(['2:network_condition'])
 
         handler = SubHandler(self)
@@ -75,6 +71,7 @@ class UaClient(object):
         sub.subscribe_data_change(self.location_y)
         sub.subscribe_data_change(self.direction)
         sub.subscribe_data_change(self.network_condition)
+        sub.subscribe_data_change(self.status)
 
     def go_front(self):
         self.device.call_method('2:go_front')

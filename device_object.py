@@ -40,3 +40,6 @@ class Device(object):
 
     def set_networkCondition(self, value):
         self.networkCondition = value
+
+    def set_status(self, value):
+        self.status = value
