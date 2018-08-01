@@ -2,7 +2,8 @@ from opcua import uamethod, Server, ua
 from virtual_map import VirtualMap
 from rq import Queue
 from redis import Redis
-import threading, time
+import threading
+import time
 
 
 class UaServer(object):
@@ -10,8 +11,9 @@ class UaServer(object):
         self.isRaspberry = True
         try:
             import RPi.GPIO as GPIO
-            from alphabot import AlphaBot2
+            from alphabot_line import AlphaBot2
             ab = AlphaBot2()
+            ab.calibration()
         except ModuleNotFoundError:
             self.isRaspberry = False
 
@@ -56,7 +58,7 @@ class UaServer(object):
             my_location_y.set_value(my_y)
             if self.isRaspberry:
                 # ab.forward(1)
-                q.enqueue(ab.forward, 1)
+                q.enqueue(ab.forward)
 
         @uamethod
         def go_back(parent):
@@ -66,7 +68,7 @@ class UaServer(object):
             my_location_y.set_value(my_y)
             if self.isRaspberry:
                 # ab.backward(1)
-                q.enqueue(ab.backward, 1)
+                q.enqueue(ab.backward)
 
         @uamethod
         def turn_left(parent):
