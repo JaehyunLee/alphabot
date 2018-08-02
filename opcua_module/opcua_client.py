@@ -27,6 +27,7 @@ class SubHandler(object):
             self.client_object.device_obj.set_status(value=val)
             print('[{0}] [{1}] [status]: {2}'.format(changed_timestamp, self.client_object.device_id, val))
         elif node == self.client_object.network_condition:
+            '''
             self.client_object.device_obj.set_networkCondition(value=val)
             data = {'thingsStatus': [self.client_object.device_obj.get_status()]}
             response = requests.post(url, data=json.dumps(data), headers={
@@ -41,6 +42,7 @@ class SubHandler(object):
                     print('[{0}] [{1}] Connected'.format(changed_timestamp, self.client_object.device_id))
             else:
                 print('[{0}]: ERROR: cannot connect iiot server'.format(changed_timestamp))
+            '''
         else:
             print('[{0}]: ERROR: unknown data is changed'.format(changed_timestamp))
 

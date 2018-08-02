@@ -13,9 +13,11 @@ class AlphaBot2(object):
         self.BIN2 = bin2
         self.ENA = ena
         self.ENB = enb
+        self.calibrated_max = self.TR.calibratedMax
+        self.calibrated_min = self.TR.calibratedMin
 
-        self.move_speed = 30
-        self.rotate_speed = 30
+        self.move_speed = 15
+        self.rotate_speed = 20
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -31,17 +33,18 @@ class AlphaBot2(object):
         self.PWMB.start(self.move_speed)
         self.stop()
 
-    def forward(self):
+    def forward(self, cali_max, cali_min):
         self.__init__()
+        self.TR.calibratedMax = cali_max
+        self.TR.calibratedMin = cali_min
+
         self.PWMA.ChangeDutyCycle(self.move_speed)  # LF
         self.PWMB.ChangeDutyCycle(self.move_speed)  # RF
         GPIO.output(self.AIN2, GPIO.HIGH)
         GPIO.output(self.BIN2, GPIO.HIGH)
-        time.sleep(0.05)
         while True:
             position, sensors = self.TR.readLine()
             if sensors[0] > 900 and sensors[1] > 900 and sensors[2] > 900 and sensors[3] > 900 and sensors[4] > 900:
-                time.sleep(0.05)
                 GPIO.output(self.AIN2, GPIO.LOW)
                 GPIO.output(self.BIN2, GPIO.LOW)
                 break
@@ -66,24 +69,20 @@ class AlphaBot2(object):
         GPIO.output(self.BIN1, GPIO.LOW)
         GPIO.output(self.BIN2, GPIO.LOW)
 
-    def backward(self):
+    def backward(self, cali_max, cali_min):
         self.__init__()
+        self.TR.calibratedMax = cali_max
+        self.TR.calibratedMin = cali_min
+
         self.PWMA.ChangeDutyCycle(self.move_speed)  # LB
         self.PWMB.ChangeDutyCycle(self.move_speed)  # RB
         GPIO.output(self.AIN1, GPIO.HIGH)
         GPIO.output(self.BIN1, GPIO.HIGH)
-
-        time.sleep(0.05)
         while True:
             position, sensors = self.TR.readLine()
             if sensors[0] > 900 and sensors[1] > 900 and sensors[2] > 900 and sensors[3] > 900 and sensors[4] > 900:
                 GPIO.output(self.AIN1, GPIO.LOW)
                 GPIO.output(self.BIN1, GPIO.LOW)
-                GPIO.output(self.AIN2, GPIO.HIGH)  # LF
-                GPIO.output(self.BIN2, GPIO.HIGH)  # RF
-                time.sleep(0.05)
-                GPIO.output(self.AIN2, GPIO.LOW)
-                GPIO.output(self.BIN2, GPIO.LOW)
                 break
             else:
                 proportional = position - 2000
@@ -141,3 +140,11 @@ class AlphaBot2(object):
                 self.calibration_left()
             self.TR.calibrate()
         self.stop()
+        self.calibrated_max = self.TR.calibratedMax
+        self.calibrated_min = self.TR.calibratedMin
+
+    def check_sensors(self):
+        while True:
+            position, sensors = self.TR.readLine()
+            print(position, sensors)
+            time.sleep(0.1)

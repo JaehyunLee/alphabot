@@ -12,8 +12,8 @@ class UaServer(object):
         try:
             import RPi.GPIO as GPIO
             from alphabot_line import AlphaBot2
-            ab = AlphaBot2()
-            ab.calibration()
+            self.ab = AlphaBot2()
+            self.ab.calibration()
         except ModuleNotFoundError:
             self.isRaspberry = False
 
@@ -58,7 +58,7 @@ class UaServer(object):
             my_location_y.set_value(my_y)
             if self.isRaspberry:
                 # ab.forward(1)
-                q.enqueue(ab.forward)
+                q.enqueue(self.ab.forward, self.ab.calibrated_max, self.ab.calibrated_min)
 
         @uamethod
         def go_back(parent):
@@ -68,7 +68,7 @@ class UaServer(object):
             my_location_y.set_value(my_y)
             if self.isRaspberry:
                 # ab.backward(1)
-                q.enqueue(ab.backward)
+                q.enqueue(self.ab.backward, self.ab.calibrated_max, self.ab.calibrated_min)
 
         @uamethod
         def turn_left(parent):
@@ -76,7 +76,7 @@ class UaServer(object):
             my_direction.set_value(my_map.turn_left())
             if self.isRaspberry:
                 # ab.left(0.35)
-                q.enqueue(ab.left, 0.35)
+                q.enqueue(self.ab.left, 0.35)
 
         @uamethod
         def turn_right(parent):
@@ -84,7 +84,7 @@ class UaServer(object):
             my_direction.set_value(my_map.turn_right())
             if self.isRaspberry:
                 # ab.right(0.35)
-                q.enqueue(ab.right, 0.35)
+                q.enqueue(self.ab.right, 0.35)
 
         def set_ready(value):
             time.sleep(value)
@@ -123,3 +123,6 @@ class UaServer(object):
 
     def stop(self):
         self.server.stop()
+
+    def check_sensors(self):
+        self.ab.check_sensors()

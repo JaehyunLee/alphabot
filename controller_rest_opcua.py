@@ -8,8 +8,11 @@ app = Flask(__name__)
 
 # OPC UA Client
 ua_client = list()
-ua_client.append(UaClient('opc.tcp://192.168.200.30:4840/optimum/device/0/'))
+# ua_client.append(UaClient('opc.tcp://192.168.200.30:4840/optimum/device/0/'))
 # ua_client.append(UaClient('opc.tcp://192.168.200.50:4840/optimum/device/1/'))
+ua_client.append(UaClient('opc.tcp://172.17.3.188:4840/optimum/device/0/'))
+
+
 num_client = len(ua_client)
 
 
